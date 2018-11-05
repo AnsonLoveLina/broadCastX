@@ -9,21 +9,34 @@ var pool = mysql.createPool({
     database: "database1"
 });
 
-function setDefault(data){
-    if (data.start == undefined){
+function setDefault(data) {
+    if (data.start == undefined) {
         data.start = 0;
     }
-    if (data.end == undefined){
+    if (data.end == undefined) {
         data.end = 10;
+    }
+    if (data.unReceived == undefined) {
+        data.unReceived = false;
+    }
+    if (data.unReceived instanceof String) {
+        data.unReceived = eval(data.unReceived.toLowerCase());
+    } else if (!data.unReceived instanceof Boolean) {
+        data.unReceived = false;
     }
     return data;
 }
 
-function getSqlFormat(){
-    var sql = "select id,source,sourceCreateTime,target,targetType,targetCreateTime,roomName,eventName,context from stuffHistory ";
+function getSqlFormat(data) {
+    var param = [data.roomName, data.eventName];
+    var select = "select id,source,sourceCreateTime,target,targetType,targetCreateTime,roomName,eventName,context from stuffHistory ";
     var where = " where roomName=? and eventName=? ";
-    var orderBy = " order by sourceCreateTime ";
-
+    if (data.unReceived) {
+        where = where + " and targetCreateTime is null ";
+    }
+    var orderBy = " order by sourceCreateTime desc ";
+    var sql = mysql.format(select + where + orderBy + " limit " + data.start + "," + (data.end - data.start), param);
+    return sql;
 }
 
 function getStuffHistory(data, callBack) {
@@ -33,7 +46,7 @@ function getStuffHistory(data, callBack) {
             console.log(err);
             return;
         }
-        var sql = mysql.format("select id,source,sourceCreateTime,target,targetType,targetCreateTime,roomName,eventName,context from stuffHistory where roomName=? and eventName=? order by sourceCreateTime", [data.roomName, data.eventName]);
+        var sql = getSqlFormat(data);
         connection.query(sql, function (err, rows) {
             if (err) {
                 console.log(err);
