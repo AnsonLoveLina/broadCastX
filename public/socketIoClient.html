@@ -17,6 +17,8 @@
     // var socket = io.connect('http://192.168.1.95:3000');
     console.log(socket);
     socket.on("connect",function () {
+        socket.emit("register", {user:"xxxxxasd"});
+        socket.emit("register", {group:"110"});
     });
 
     socket.on("testevent", function (data) {
@@ -42,8 +44,8 @@
     function sendStuff(){
         var data = {};
         data.roomName = "110";
-        data.eventName = "STUFF";
-        data.text = "{\"content\":\"不发货的\",\"type\":\"TYPE_SEND\",\"userCustomer\":{\"customerId\":\"a40717170\",\"customerType\":\"user\"}}";
+        data.eventName = "textEvent";
+        data.text = "{\"context\":\"不发货的\",\"eventName\":\"TEXT_EVENT\",\"source\":\"xxxxxasd\",\"target\":\"110\",\"targetType\":\"GROUP\",\"roomName\":\"110\"}";
         socket.emit("broadcastInfo", data);
     }
 

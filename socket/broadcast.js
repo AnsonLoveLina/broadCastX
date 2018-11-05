@@ -1,6 +1,7 @@
 var io = require('socket.io')();
 var serverUtil = require('../util/serverUtil');
 
+var queue = require("../queue/queue");
 
 function register(data, io, socket) {
     if (data.user) {
@@ -101,14 +102,14 @@ function initConnection(io) {
                 console.log("socket:" + socket.id);
                 console.log("namespace:" + data.namespace + ",roomName:" + data.roomName + ",eventName:" + data.eventName + ",text:" + data.text);
                 var roomPeoples = io.sockets.adapter.rooms[data.roomName];
-                if (!!roomPeoples) {
+                if (!roomPeoples) {
                     socket.emit("info", "roomName:" + data.roomName + "not exists!");
                     return;
                 }
                 if (data.namespace) {
-                    io.of(data.namespace).to(data.roomName).emit(data.eventName, data.text);
+                    emitStuff(io.of(data.namespace),data.roomName,data.eventName,data.text);
                 } else {
-                    socket.to(data.roomName).emit(data.eventName, data.text);
+                    emitStuff(socket,data.roomName,data.eventName,data.text);
                 }
             } else {
                 socket.emit("err", "data fromat error!{roomName,eventName,text,?namespace}");
@@ -125,5 +126,11 @@ function initConnection(io) {
     });
 }
 
+function emitStuff(socket,roomName,eventName,data){
+    queue.sendQueueMsgEvent(queue.imEvent, data);
+    socket.to(roomName).emit(eventName, data);
+}
+
 module.exports.initSocket = initSocket;
+module.exports.emitStuff = emitStuff;
 module.exports.io = io;
