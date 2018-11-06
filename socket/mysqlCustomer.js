@@ -9,6 +9,8 @@ var pool = mysql.createPool({
     database: "database1"
 });
 
+var imEventstuff = "im";
+
 function setDefault(data) {
     if (data.start == undefined) {
         data.start = 0;
@@ -28,9 +30,9 @@ function setDefault(data) {
 }
 
 function getSqlFormat(data) {
-    var param = [data.roomName, data.eventName];
+    var param = [data.target,data.targetType, data.eventName];
     var select = "select id,source,sourceCreateTime,target,targetType,targetCreateTime,roomName,eventName,context from stuffHistory ";
-    var where = " where roomName=? and eventName=? ";
+    var where = " where target=? and targetType=? and eventName=? ";
     if (data.unReceived) {
         where = where + " and targetCreateTime is null ";
     }
@@ -60,6 +62,10 @@ function getStuffHistory(data, callBack) {
 }
 
 var mysqlCustomer = function (stuff) {
+    if (stuff.source == undefined || stuff.target == undefined || stuff.targetType == undefined || stuff.roomName == undefined || stuff.eventName == undefined || stuff.context == undefined) {
+        console.log("illegal stuff:" + stuff);
+        return;
+    }
     pool.getConnection(function (err, connection) {
         if (err) {
             console.log(err);
@@ -79,9 +85,10 @@ var mysqlCustomer = function (stuff) {
 };
 
 function register() {
-    queue.registerEvent(queue.imEvent, mysqlCustomer);
+    queue.registerEvent(imEventstuff, mysqlCustomer);
 }
 
 module.exports.register = register;
 module.exports.getStuffHistory = getStuffHistory;
 module.exports.pool = pool;
+module.exports.imEvent = imEventstuff;

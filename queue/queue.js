@@ -1,7 +1,6 @@
 var serverUtil = require('../util/serverUtil');
 var eventMap = new Map();
 
-var imEventstuff = "im";
 
 function registerEvent(eventName, customer) {
     var customers = [];
@@ -22,6 +21,5 @@ function sendQueueMsgEvent(eventName, stuff) {
     }
 }
 
-module.exports.imEvent = imEventstuff;
 module.exports.registerEvent = registerEvent;
 module.exports.sendQueueMsgEvent = sendQueueMsgEvent;

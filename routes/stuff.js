@@ -6,8 +6,8 @@ var mysqlCustomer = require("../socket/mysqlCustomer");
 /* get users listing. */
 router.get('/stuffHistory', function (req, res, next) {
     var data = req.query;
-    if (data.roomName == undefined || data.eventName == undefined) {
-        res.json({resCode: 1, err: "roomName and eventName is null!"});
+    if (data.targetType == undefined || data.target == undefined || data.eventName == undefined) {
+        res.json({resCode: 1, err: "one of target,targetType and eventName is null!"});
         return;
     }
     mysqlCustomer.getStuffHistory(data, function (result) {

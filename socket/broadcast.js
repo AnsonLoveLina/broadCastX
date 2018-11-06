@@ -3,6 +3,8 @@ var serverUtil = require('../util/serverUtil');
 
 var queue = require("../queue/queue");
 
+var mysqlCustomer = require("../socket/mysqlCustomer");
+
 function register(data, io, socket) {
     if (data.user) {
         var user = data.user;
@@ -127,7 +129,7 @@ function initConnection(io) {
 }
 
 function emitStuff(socket,roomName,eventName,data){
-    queue.sendQueueMsgEvent(queue.imEvent, data);
+    queue.sendQueueMsgEvent(mysqlCustomer.imEvent, data);
     socket.to(roomName).emit(eventName, data);
 }
 
