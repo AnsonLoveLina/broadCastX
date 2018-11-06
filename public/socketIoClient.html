@@ -11,9 +11,9 @@
 <input type="button" value="sendGroupBroadcastInfo" onclick="sendGroupDCN()"/>
 <input type="button" value="sendStuff" onclick="sendStuff()"/>
 </body>
-<script type="text/javascript" src="http://127.0.0.1:3000/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="http://192.168.1.95:3000/socket.io/socket.io.js"></script>
 <script>
-    var socket = io.connect('http://127.0.0.1:3000');
+    var socket = io.connect('http://192.168.1.95:3000');
     // var socket = io.connect('http://192.168.1.95:3000');
     console.log(socket);
     socket.on("connect",function () {
