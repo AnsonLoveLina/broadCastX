@@ -13,7 +13,7 @@ function registerEvent(eventName, customer) {
 
 function sendQueueMsgEvent(eventName, stuff) {
     stuff = serverUtil.parseJson(stuff, function (err) {
-        console.log(err + " \n json parse error!");
+        console.log(err + " \n json " + stuff + " parse error!");
     });
     var customers = eventMap.get(eventName);
     for (var index in customers) {
