@@ -1,0 +1,2 @@
+docker build -t broadcastx .
+docker run --name broadcastx -p 3000:3000 -d broadcastx

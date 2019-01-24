@@ -4,4 +4,4 @@ WORKDIR /broadcastx
 COPY ./ /broadcastx
 RUN npm install
 EXPOSE 3000
-CMD npm start
+ENTRYPOINT ["npm start"]
