@@ -65,9 +65,10 @@ broadcastInfo用于第三方发送给对应user或者group数据，相应事件e
 假如不添加则不会有此次response，也就是这次发送操作，你无法知道服务端是否有成功接收。
 
 response格式：
-flag：0失败，1成功
-messageType：代表此次返回的类型。register,unRegister,broadcastInfo
-messageLevel：代表此次返回的级别。err,info,warn
+- flag：0失败，1成功
+- messageType：代表此次返回的类型。register,unRegister,broadcastInfo
+- messageLevel：代表此次返回的级别。err,info,warn
+
 message：代表此处返回的内容
 {flag:"1",messageType:"register",messageLevel:"warn",message:"login repeated!unRegister the older one!"}
 
