@@ -57,7 +57,10 @@ broadcastInfo用于第三方发送给对应user或者group数据，相应事件e
         }
     </script>
     </code></pre>
-    
+
+
+JS客户端事件
+=======
 客户端可以发送三个公共事件：register,unRegister,broadcastInfo，
 
 所有事件客户端在emit方法最后增加一个参数来获取服务端就这次请求返回的response相应：socket.emit("broadcastInfo", data,function(resp){console.log(resp)});
