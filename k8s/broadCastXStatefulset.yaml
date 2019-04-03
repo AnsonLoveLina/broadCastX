@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: broadcastx
+spec:
+  serviceName: "broadcastx"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broadcastx
+  template:
+    metadata:
+      labels:
+        app: broadcastx
+    spec:
+      volumes:
+        - name: broadcastx
+          hostPath:
+            path: /root/broadCastX
+        - name: broadcastx-mysql
+          hostPath:
+            path: /root/broadCastX/mysql
+      initContainers:
+        - name: mysql
+          image: mysql
+          volumeMounts:
+            - name: broadcastx-mysql
+              mountPath: /broadcastx-mysql-init
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "123456"
+          command: [ "mysql" , "-uroot" , "-p123456" , "</broadcastx-mysql-init/init.sql" ]
+      containers:
+        - name: roomserver
+          image: node
+          volumeMounts:
+            - name: broadcastx
+              mountPath: /broadcastx
+          imagePullPolicy: IfNotPresent
+          command: [ "npm install", "npm start" ]
+          ports:
+            - containerPort: 3000
+              name: broadcastx
