@@ -68,9 +68,9 @@ response格式：
 - flag：0失败，1成功
 - messageType：代表此次返回的类型。register,unRegister,broadcastInfo
 - messageLevel：代表此次返回的级别。err,info,warn
+- message：代表此处返回的内容
 
-message：代表此处返回的内容
-{flag:"1",messageType:"register",messageLevel:"warn",message:"login repeated!unRegister the older one!"}
+例子：{flag:"1",messageType:"register",messageLevel:"warn",message:"login repeated!unRegister the older one!"}
 
 **register**
 
