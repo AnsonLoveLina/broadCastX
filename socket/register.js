@@ -1,4 +1,4 @@
-function register(data, io, socket,fn) {
+function register(data, io, socket) {
     if (data.user) {
         let user = data.user;
         //广播接收者

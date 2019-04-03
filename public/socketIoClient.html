@@ -17,7 +17,7 @@
     var socket = io.connect('http://localhost:3000');
     // var socket = io.connect('http://192.168.1.95:3000');
     socket.on("connect",function () {
-        socket.emit("register", {group:"110"},function(resp){console.log(resp)});
+        socket.emit("register", {group:"110"});
 
         socket.on("textEvent", function (data) {
             console.log("textEvent"+data);

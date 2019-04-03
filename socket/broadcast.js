@@ -26,32 +26,50 @@ function initSocket(server) {
 function initConnection(io) {
     return io.on('connection', function (socket) {
         console.log('connection:' + socket.id);
-        socket.on("register", function (data,fn) {
+        socket.on("register", function (data, fn) {
+            if (fn === undefined) {
+                fn = console.log;
+            }
             data = serverUtil.parseJson(data, function (err) {
-                fn({flag:"0",messageType:"register",messageLevel:"err",message:err + " \n json parse error!" + data});
+                fn({
+                    flag: "0",
+                    messageType: "register",
+                    messageLevel: "err",
+                    message: err + " \n json parse error!" + data
+                });
             });
-            if (serverUtil.isObj(data)){
-                let result = register.register(data, io, socket,fn);
+            if (serverUtil.isObj(data)) {
+                let result = register.register(data, io, socket);
                 fn(result);
             }
         });
-        socket.on("unRegister", function (data,fn) {
+        socket.on("unRegister", function (data, fn) {
             data = serverUtil.parseJson(data, function (err) {
-                fn({flag:"0",messageType:"unRegister",messageLevel:"err",message:err + " \n json parse error!" + data});
+                fn({
+                    flag: "0",
+                    messageType: "unRegister",
+                    messageLevel: "err",
+                    message: err + " \n json parse error!" + data
+                });
             });
-            if (serverUtil.isObj(data)){
-                let result = unRegister.unRegister(data, io, socket,fn);
+            if (serverUtil.isObj(data)) {
+                let result = unRegister.unRegister(data, io, socket);
                 fn(result);
             }
         });
 
         //广播发送者
-        socket.on("broadcastInfo", function (data,fn) {
+        socket.on("broadcastInfo", function (data, fn) {
             data = serverUtil.parseJson(data, function (err) {
-                fn({flag:"0",messageType:"broadcastInfo",messageLevel:"err",message:err + " \n json parse error!" + data});
+                fn({
+                    flag: "0",
+                    messageType: "broadcastInfo",
+                    messageLevel: "err",
+                    message: err + " \n json parse error!" + data
+                });
             });
-            if (serverUtil.isObj(data)){
-                let result = broadcastInfo.broadcastInfo(data, io, socket,fn);
+            if (serverUtil.isObj(data)) {
+                let result = broadcastInfo.broadcastInfo(data, io, socket);
                 fn(result);
             }
         });
