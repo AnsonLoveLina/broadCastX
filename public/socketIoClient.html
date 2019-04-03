@@ -11,17 +11,17 @@
 <input type="button" value="sendGroupBroadcastInfo" onclick="sendGroupDCN()"/>
 <input type="button" value="sendStuff" onclick="sendStuff()"/>
 </body>
-<!--<script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>-->
-<script type="text/javascript" src="http://192.168.1.95:3000/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
+<!--<script type="text/javascript" src="http://192.168.1.95:3000/socket.io/socket.io.js"></script>-->
 <script>
-    // var socket = io.connect('http://localhost:3000');
-    var socket = io.connect('http://192.168.1.95:3000');
+    var socket = io.connect('http://localhost:3000');
+    // var socket = io.connect('http://192.168.1.95:3000');
     socket.on("connect",function () {
-        socket.emit("register", {group:"110"});
-    });
+        socket.emit("register", {group:"110"},function(resp){console.log(resp)});
 
-    socket.on("textEvent", function (data) {
-        console.log("textEvent"+data);
+        socket.on("textEvent", function (data) {
+            console.log("textEvent"+data);
+        });
     });
 
     socket.on("groupStatus", function (data) {
@@ -45,15 +45,15 @@
         data.roomName = "110";
         data.eventName = "textEvent";
         data.text = "{\"context\":\"不发货的\",\"eventName\":\"TEXT_EVENT\",\"source\":\"xxxxxasd\",\"target\":\"110\",\"targetType\":\"GROUP\",\"roomName\":\"110\"}";
-        socket.emit("broadcastInfo", data);
+        socket.emit("broadcastInfo", data,function(resp){console.log(resp)});
     }
 
     function sendGroupunRegister(){
-        socket.emit("unRegister", {"group": "110"});
+        socket.emit("unRegister", {"group": "110"},function(resp){console.log(resp)});
     }
 
     function sendGroupRegister() {
-        socket.emit("register", {"group": "110"});
+        socket.emit("register", {"group": "110"},function(resp){console.log(resp)});
     }
 
     function sendUserDCN() {
@@ -61,7 +61,7 @@
         data.roomName = "xxx";
         data.eventName = "countMsg";
         data.text = 99;
-        socket.emit("broadcastInfo", data);
+        socket.emit("broadcastInfo", data,function(resp){console.log(resp)});
     }
 
     function sendGroupDCN() {
@@ -69,7 +69,7 @@
         data.roomName = "vvv";
         data.eventName = "receive";
         data.text = 100;
-        socket.emit("broadcastInfo", data);
+        socket.emit("broadcastInfo", data,function(resp){console.log(resp)});
     }
 </script>
 </html>

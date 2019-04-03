@@ -1,72 +1,16 @@
-var io = require('socket.io')();
-var serverUtil = require('../util/serverUtil');
+let io = require('socket.io')();
+let serverUtil = require('../util/serverUtil');
 
-var queue = require("../queue/queue");
+let broadcastInfo = require("./broadcastInfo");
+let register = require("./register");
+let unRegister = require("./unRegister");
 
-var mysqlCustomer = require("../socket/mysqlCustomer");
-
-function register(data, io, socket) {
-    if (data.user) {
-        var user = data.user;
-        //广播接收者
-        var roomPeoples = io.sockets.adapter.rooms[user];
-        if (roomPeoples != undefined) {
-            socket.emit("warn", "login repeated!unRegister the older one!");
-            for (var loginedSocketId in roomPeoples.sockets) {
-                console.log("client:" + loginedSocketId + ";" + user + " is unRegistered!");
-                socket.to(loginedSocketId).leave(user);
-            }
-        }
-
-        console.log("client:" + socket.id + ";" + user + " login success!");
-        socket.emit("info", user + " login success");
-        socket.join(user);
-
-        socket.on("disconnect", function (reason) {
-            console.log("client:" + socket.id + "connection is closed,auto unRegister the user:" + user + "!");
-            // socket.to(socket.id).leave(user);
-            // socket.leave(user);
-        });
-    } else if (data.group) {
-        var group = data.group;
-        if (group.indexOf("pairGroup") == 0) {
-            var roomPeoples = io.sockets.adapter.rooms[group];
-            //第二个注册的人会发送offer
-            if (roomPeoples != undefined) {
-                socket.emit("pairOffer", true);
-            } else {
-                socket.emit("pairOffer", false);
-            }
-        }
-        console.log("client:" + socket.id + " join the group:" + group + " success!");
-        socket.emit("info", "join the group:" + group + " success!");
-        socket.join(group);
-
-        socket.on("disconnect", function (reason) {
-            console.log("client:" + socket.id + "connection is closed,auto unRegister the group:" + group + "!");
-            // socket.to(socket.id).leave(group);
-            // socket.leave(group);
-        });
-    }
-}
-
-function unRegister(data, io, socket) {
-    if (data.user) {
-        var user = data.user;
-        console.log("unRegister the user" + user + "!");
-        socket.leave(user);
-    } else if (data.group) {
-        var group = data.group;
-        console.log("unRegister the group:" + group + "!");
-        socket.leave(group);
-    }
-}
 
 function initSocket(server) {
 
     /*socket.io*/
-    var pingInterval = process.env.pingInterval || '10000';
-    var pingTimeout = process.env.pingTimeout || '5000';
+    let pingInterval = process.env.pingInterval || '10000';
+    let pingTimeout = process.env.pingTimeout || '5000';
 
     io.attach(server, {
         //间隔时间ping客户端
@@ -82,39 +26,33 @@ function initSocket(server) {
 function initConnection(io) {
     return io.on('connection', function (socket) {
         console.log('connection:' + socket.id);
-        socket.on("register", function (data) {
+        socket.on("register", function (data,fn) {
             data = serverUtil.parseJson(data, function (err) {
-                socket.emit("err", err + " \n json parse error!" + data);
+                fn({flag:"0",messageType:"register",messageLevel:"err",message:err + " \n json parse error!" + data});
             });
-            register(data, io, socket);
+            if (serverUtil.isObj(data)){
+                let result = register.register(data, io, socket,fn);
+                fn(result);
+            }
         });
-        socket.on("unRegister", function (data) {
+        socket.on("unRegister", function (data,fn) {
             data = serverUtil.parseJson(data, function (err) {
-                socket.emit("err", err + " \n json parse error!" + data);
+                fn({flag:"0",messageType:"unRegister",messageLevel:"err",message:err + " \n json parse error!" + data});
             });
-            unRegister(data, io, socket);
+            if (serverUtil.isObj(data)){
+                let result = unRegister.unRegister(data, io, socket,fn);
+                fn(result);
+            }
         });
 
         //广播发送者
-        socket.on("broadcastInfo", function (data) {
+        socket.on("broadcastInfo", function (data,fn) {
             data = serverUtil.parseJson(data, function (err) {
-                socket.emit("err", err + " \n json parse error!" + data);
+                fn({flag:"0",messageType:"broadcastInfo",messageLevel:"err",message:err + " \n json parse error!" + data});
             });
-            if (data.roomName && data.eventName && data.text) {
-                console.log("socket:" + socket.id);
-                console.log("namespace:" + data.namespace + ",roomName:" + data.roomName + ",eventName:" + data.eventName + ",text:" + data.text);
-                var roomPeoples = io.sockets.adapter.rooms[data.roomName];
-                if (!roomPeoples) {
-                    socket.emit("info", "roomName:" + data.roomName + "not exists!");
-                    return;
-                }
-                if (data.namespace) {
-                    emitStuff(io.of(data.namespace),data.roomName,data.eventName,data.text);
-                } else {
-                    emitStuff(socket,data.roomName,data.eventName,data.text);
-                }
-            } else {
-                socket.emit("err", "data fromat error!{roomName,eventName,text,?namespace}");
+            if (serverUtil.isObj(data)){
+                let result = broadcastInfo.broadcastInfo(data, io, socket,fn);
+                fn(result);
             }
         });
 
@@ -128,11 +66,5 @@ function initConnection(io) {
     });
 }
 
-function emitStuff(socket,roomName,eventName,data){
-    queue.sendQueueMsgEvent(mysqlCustomer.imEvent, data);
-    socket.to(roomName).emit(eventName, data);
-}
-
 module.exports.initSocket = initSocket;
-module.exports.emitStuff = emitStuff;
 module.exports.io = io;

@@ -24,5 +24,15 @@ function parseJson(data, err) {
     return data;
 }
 
+function isObj(str) {
+    if (str === null || typeof str === 'undefined') {
+        return false;
+    }
+    return typeof str === 'object';
+}
+
+module.exports.isObj = isObj;
+
+
 module.exports.getParams = getParams;
 module.exports.parseJson = parseJson;
