@@ -9,6 +9,8 @@
 <input type="button" value="sendGroupunRegister" onclick="sendGroupunRegister()"/>
 <input type="button" value="sendUserBroadcastInfo" onclick="sendUserDCN()"/>
 <input type="button" value="sendGroupBroadcastInfo" onclick="sendGroupDCN()"/>
+<input type="button" value="sendStuff" onclick="sendGroupStuff()"/>
+<input type="text" id="userid">
 <input type="button" value="sendStuff" onclick="sendStuff()"/>
 </body>
 <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
@@ -17,7 +19,7 @@
     var socket = io.connect('http://localhost:3000');
     // var socket = io.connect('http://192.168.1.95:3000');
     socket.on("connect",function () {
-        socket.emit("register", {group:"110"});
+        socket.emit("register", {group:"110"},function(resp){console.log(resp)});
 
         socket.on("textEvent", function (data) {
             console.log("textEvent"+data);
@@ -41,6 +43,14 @@
     });
 
     function sendStuff(){
+        var data = {};
+        data.roomName = document.getElementById("userid").value;
+        data.eventName = "textEvent";
+        data.text = "{\"context\":\"不发货的\",\"eventName\":\"TEXT_EVENT\",\"source\":\"xxxxxasd\",\"target\":\"110\",\"targetType\":\"USER\",\"roomName\":\"110\"}";
+        socket.emit("broadcastInfo", data,function(resp){console.log(resp)});
+    }
+
+    function sendGroupStuff(){
         var data = {};
         data.roomName = "110";
         data.eventName = "textEvent";

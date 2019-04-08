@@ -32,14 +32,15 @@ function broadcastInfo(data, io, socket) {
 
 function emitStuff(socket, roomName, eventName, data) {
     queue.sendQueueMsgEvent(mysqlCustomer.imEvent, data);
-    let emit = setInterval(function () {
-        console.log("roomName:"+roomName+",send:"+data);
-        socket.to(roomName).volatile.emit(eventName, data);
-    }, 100);
-
-    socket.on('disconnect', function () {
-        clearInterval(emit);
-    });
+    socket.to(roomName).volatile.emit(eventName, data);
+    // let emit = setInterval(function () {
+    //     console.log("roomName:"+roomName+",send:"+data);
+    //     socket.to(roomName).volatile.emit(eventName, data);
+    // }, 100);
+    //
+    // socket.on('disconnect', function () {
+    //     clearInterval(emit);
+    // });
 }
 
 module.exports.broadcastInfo = broadcastInfo;

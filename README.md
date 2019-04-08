@@ -59,7 +59,7 @@ broadcastInfo用于第三方发送给对应user或者group数据，相应事件e
     </code></pre>
 
 
-JS客户端事件
+JS客户端事件 
 =======
 客户端可以发送三个公共事件：register,unRegister,broadcastInfo，
 
