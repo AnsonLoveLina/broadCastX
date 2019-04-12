@@ -17,9 +17,19 @@
 <!--<script type="text/javascript" src="http://192.168.1.95:3000/socket.io/socket.io.js"></script>-->
 <script>
     var socket = io.connect('http://localhost:3000');
-    // var socket = io.connect('http://192.168.1.95:3000');
+
+    var timeoutId = setTimeout(timeoutErrorFn, 500);
+
+    var timeoutErrorFn = function(){
+      console.log("ack fn timeout");
+    };
+
+    var acknCallbackFn = function(data){
+        clearTimeout(timeoutId);
+        console.log("ack fn data:"+data);
+    };
     socket.on("connect",function () {
-        socket.emit("register", {group:"110"},function(resp){console.log(resp)});
+        socket.emit("register", {group:"110"},acknCallbackFn);
 
         socket.on("textEvent", function (data) {
             console.log("textEvent"+data);
@@ -47,7 +57,7 @@
         data.roomName = document.getElementById("userid").value;
         data.eventName = "textEvent";
         data.text = "{\"context\":\"不发货的\",\"eventName\":\"TEXT_EVENT\",\"source\":\"xxxxxasd\",\"target\":\"110\",\"targetType\":\"USER\",\"roomName\":\"110\"}";
-        socket.emit("broadcastInfo", data,function(resp){console.log(resp)});
+        socket.emit("broadcastInfo", data,acknCallbackFn);
     }
 
     function sendGroupStuff(){
@@ -55,15 +65,15 @@
         data.roomName = "110";
         data.eventName = "textEvent";
         data.text = "{\"context\":\"不发货的\",\"eventName\":\"TEXT_EVENT\",\"source\":\"xxxxxasd\",\"target\":\"110\",\"targetType\":\"GROUP\",\"roomName\":\"110\"}";
-        socket.emit("broadcastInfo", data,function(resp){console.log(resp)});
+        socket.emit("broadcastInfo", data,acknCallbackFn);
     }
 
     function sendGroupunRegister(){
-        socket.emit("unRegister", {"group": "110"},function(resp){console.log(resp)});
+        socket.emit("unRegister", {"group": "110"},acknCallbackFn);
     }
 
     function sendGroupRegister() {
-        socket.emit("register", {"group": "110"},function(resp){console.log(resp)});
+        socket.emit("register", {"group": "110"},acknCallbackFn);
     }
 
     function sendUserDCN() {
@@ -71,7 +81,7 @@
         data.roomName = "xxx";
         data.eventName = "countMsg";
         data.text = 99;
-        socket.emit("broadcastInfo", data,function(resp){console.log(resp)});
+        socket.emit("broadcastInfo", data,acknCallbackFn);
     }
 
     function sendGroupDCN() {
@@ -79,7 +89,7 @@
         data.roomName = "vvv";
         data.eventName = "receive";
         data.text = 100;
-        socket.emit("broadcastInfo", data,function(resp){console.log(resp)});
+        socket.emit("broadcastInfo", data,acknCallbackFn);
     }
 </script>
 </html>
