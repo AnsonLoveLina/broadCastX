@@ -16,11 +16,11 @@ spec:
       volumes:
         - name: broadcastx
           hostPath:
-            path: /root/broadCastX
+            path: /root/broadcastxK8S/broadCastX
         - name: broadcastx-mysql
           hostPath:
-            path: /root/broadCastX/mysql
-      initContainers:
+            path: /root/broadcastxK8S/broadCastX/mysql
+      containers:
         - name: mysql
           image: mysql
           volumeMounts:
@@ -31,8 +31,9 @@ spec:
             - name: MYSQL_ROOT_PASSWORD
               value: "123456"
           command: [ "mysql" , "-uroot" , "-p123456" , "</broadcastx-mysql-init/init.sql" ]
-      containers:
-        - name: roomserver
+          ports:
+            - containerPort: 3306
+        - name: broadcastx
           image: node
           volumeMounts:
             - name: broadcastx
@@ -41,4 +42,3 @@ spec:
           command: [ "npm install", "npm start" ]
           ports:
             - containerPort: 3000
-              name: broadcastx
