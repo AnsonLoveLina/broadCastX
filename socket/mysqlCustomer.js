@@ -3,9 +3,8 @@ var uuid = require('node-uuid');
 
 var queue = require("../queue/queue");
 var pool = mysql.createPool({
-    host: "broadcastxmysql",
     // host: "192.168.1.95",
-    // host: "127.0.0.1",
+    host: "127.0.0.1",
     user: "broadcastx",
     password: "123456",
     database: "database1"
