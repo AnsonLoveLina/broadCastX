@@ -31,12 +31,13 @@ function broadcastInfo(data, io, socket) {
 }
 
 function emitStuff(socket, roomName, eventName, data) {
+    //send data to mysql
     queue.sendQueueMsgEvent(mysqlCustomer.imEvent, data);
     socket.to(roomName).volatile.emit(eventName, data);
     // let emit = setInterval(function () {
     //     console.log("roomName:"+roomName+",send:"+data);
     //     socket.to(roomName).volatile.emit(eventName, data);
-    // }, 100);
+    // }, 10000);
     //
     // socket.on('disconnect', function () {
     //     clearInterval(emit);

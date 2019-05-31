@@ -3,7 +3,7 @@ docker run --name broadcastx -p 3000:3000 -d broadcastx
 
 docker run -p 3306:3306 --name broadcastx-mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql
 docker exec -it broadcastx-mysql bash
-mysql -u root -p 123456
+mysql -uroot -p123456
 ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';
 CREATE USER 'broadcastx'@'%' IDENTIFIED WITH mysql_native_password BY '123456';
 GRANT ALL PRIVILEGES ON *.* TO 'broadcastx'@'%';
