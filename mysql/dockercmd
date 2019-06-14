@@ -1,0 +1,2 @@
+docker build -t broadcastx-mysql .
+docker run -p 3305:3306 --name broadcastx-mysql -e MYSQL_ROOT_PASSWORD=123456 -d broadcastx-mysql
