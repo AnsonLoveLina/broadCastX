@@ -31,10 +31,12 @@ function broadcastInfo(data, io, socket) {
 }
 
 function emitStuff(socket, roomName, eventName, data) {
-    //send data to mysql
+    //send data to db
     queue.sendQueueMsgEvent(mysqlCustomer.imEvent, data);
+    //假若超时则重发一次
     var timeoutErrorFn = function () {
         console.log("ack fn timeout");
+        socket.to(roomName).volatile.emit(eventName, data);
     };
     var timeoutId = setTimeout(timeoutErrorFn, 500);
     var acknCallbackFn = function (data) {
@@ -42,14 +44,6 @@ function emitStuff(socket, roomName, eventName, data) {
         console.log("ack fn data:" + data);
     };
     socket.to(roomName).volatile.emit(eventName, data, acknCallbackFn);
-    // let emit = setInterval(function () {
-    //     console.log("roomName:"+roomName+",send:"+data);
-    //     socket.to(roomName).volatile.emit(eventName, data);
-    // }, 10000);
-    //
-    // socket.on('disconnect', function () {
-    //     clearInterval(emit);
-    // });
 }
 
 module.exports.broadcastInfo = broadcastInfo;
