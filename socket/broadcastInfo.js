@@ -4,7 +4,7 @@ let mysqlCustomer = require("../socket/mysqlCustomer");
 
 function broadcastInfo(data, io, socket) {
     if (data.roomName && data.eventName && data.text) {
-        console.log("client:" + socket.id+",namespace:" + data.namespace + ",roomName:" + data.roomName + ",eventName:" + data.eventName + ",text:" + data.text);
+        console.log("client:" + socket.id + ",namespace:" + data.namespace + ",roomName:" + data.roomName + ",eventName:" + data.eventName + ",text:" + data.text);
         let roomPeoples = io.sockets.adapter.rooms[data.roomName];
         if (!roomPeoples) {
             return {
@@ -33,7 +33,15 @@ function broadcastInfo(data, io, socket) {
 function emitStuff(socket, roomName, eventName, data) {
     //send data to mysql
     queue.sendQueueMsgEvent(mysqlCustomer.imEvent, data);
-    socket.to(roomName).volatile.emit(eventName, data);
+    var timeoutId = setTimeout(timeoutErrorFn, 500);
+    var timeoutErrorFn = function () {
+        console.log("ack fn timeout");
+    };
+    var acknCallbackFn = function (data) {
+        clearTimeout(timeoutId);
+        console.log("ack fn data:" + data);
+    };
+    socket.to(roomName).volatile.emit(eventName, data, acknCallbackFn);
     // let emit = setInterval(function () {
     //     console.log("roomName:"+roomName+",send:"+data);
     //     socket.to(roomName).volatile.emit(eventName, data);
