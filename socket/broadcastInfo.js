@@ -33,10 +33,10 @@ function broadcastInfo(data, io, socket) {
 function emitStuff(socket, roomName, eventName, data) {
     //send data to mysql
     queue.sendQueueMsgEvent(mysqlCustomer.imEvent, data);
-    var timeoutId = setTimeout(timeoutErrorFn, 500);
     var timeoutErrorFn = function () {
         console.log("ack fn timeout");
     };
+    var timeoutId = setTimeout(timeoutErrorFn, 500);
     var acknCallbackFn = function (data) {
         clearTimeout(timeoutId);
         console.log("ack fn data:" + data);
