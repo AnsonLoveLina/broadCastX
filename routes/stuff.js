@@ -1,16 +1,16 @@
 var express = require('express');
 var router = express.Router();
 
-var mysqlCustomer = require("../socket/mysqlCustomer");
+var oracleCustomer = require("../socket/oracleCustomer");
 
 /* get users listing. */
-router.get('/stuffHistory', function (req, res, next) {
+router.get('/stuffHistory', function (req, res) {
     var data = req.query;
     if (data.targetType == undefined || data.target == undefined || data.eventName == undefined) {
         res.json({resCode: 1, err: "one of target,targetType and eventName is null!"});
         return;
     }
-    mysqlCustomer.getStuffHistory(data, function (result) {
+    oracleCustomer.getStuffHistory(data, function (result) {
         if (result.err != undefined) {
             res.json({resCode: 1, err: result.err});
         } else {

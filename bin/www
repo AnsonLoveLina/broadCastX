@@ -9,6 +9,7 @@ var debug = require('debug')('broadcastx:server');
 var http = require('http');
 var broadcast = require('../socket/broadcast');
 var mysqlCustomer = require('../socket/mysqlCustomer');
+var oracleCustomer = require('../socket/oracleCustomer');
 
 /**
  * Get port from environment and store in Express.
@@ -23,7 +24,8 @@ app.set('port', port);
 
 var server = http.createServer(app);
 broadcast.initSocket(server);
-mysqlCustomer.register();
+// mysqlCustomer.register();
+oracleCustomer.register();
 
 /**
  * Listen on provided port, on all network interfaces.

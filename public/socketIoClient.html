@@ -16,64 +16,66 @@
 <script type="text/javascript" src="http://localhost:3000/socket.io/socket.io.js"></script>
 <!--<script type="text/javascript" src="http://192.168.1.95:3000/socket.io/socket.io.js"></script>-->
 <script>
+
     var socket = io.connect('http://localhost:3000');
 
     var timeoutId = setTimeout(timeoutErrorFn, 500);
 
-    var timeoutErrorFn = function(){
-      console.log("ack fn timeout");
+    var timeoutErrorFn = function () {
+        console.log("ack fn timeout");
     };
 
-    var acknCallbackFn = function(data){
+    var acknCallbackFn = function (data) {
         clearTimeout(timeoutId);
-        console.log("ack fn data:"+data);
+        console.log("ack fn data:" + data);
     };
-    socket.on("connect",function () {
-        socket.emit("register", {group:"110"},acknCallbackFn);
+    socket.on("connect", function () {
+        socket.emit("register", {group: "110"}, acknCallbackFn);
 
-        socket.on("textEvent", function (data) {
-            console.log("textEvent"+data);
+        socket.on("textEvent", function (data, fn) {
+            console.log("textEvent" + data);
+            fn({flag: "1", messageType: "broadcastInfo", messageLevel: "info", message: "success!"});
         });
     });
 
     socket.on("groupStatus", function (data) {
-        console.log("groupStatus"+data);
+        console.log("groupStatus" + data);
     });
 
     socket.on("groupMessage", function (data) {
-        console.log("groupMessage"+data);
+        console.log("groupMessage" + data);
     });
 
     socket.on("taskFeedbackStream", function (data) {
-        console.log("taskFeedbackStream"+data);
+        console.log("taskFeedbackStream" + data);
     });
 
     socket.on("taskStream", function (data) {
-        console.log("taskStream"+data);
+        console.log("taskStream" + data);
     });
 
-    function sendStuff(){
+    function sendStuff() {
         var data = {};
         data.roomName = document.getElementById("userid").value;
         data.eventName = "textEvent";
         data.text = "{\"context\":\"不发货的\",\"eventName\":\"TEXT_EVENT\",\"source\":\"xxxxxasd\",\"target\":\"110\",\"targetType\":\"USER\",\"roomName\":\"110\"}";
-        socket.emit("broadcastInfo", data,acknCallbackFn);
+        socket.emit("broadcastInfo", data, acknCallbackFn);
     }
 
-    function sendGroupStuff(){
+    function sendGroupStuff() {
         var data = {};
         data.roomName = "110";
         data.eventName = "textEvent";
         data.text = "{\"context\":\"不发货的\",\"eventName\":\"TEXT_EVENT\",\"source\":\"xxxxxasd\",\"target\":\"110\",\"targetType\":\"GROUP\",\"roomName\":\"110\"}";
-        socket.emit("broadcastInfo", data,acknCallbackFn);
+        socket.emit("broadcastInfo", data, acknCallbackFn);
     }
 
-    function sendGroupunRegister(){
-        socket.emit("unRegister", {"group": "110"},acknCallbackFn);
+    function sendGroupunRegister() {
+        socket.emit("unRegister", {"group": "110"}, acknCallbackFn);
     }
 
     function sendGroupRegister() {
-        socket.emit("register", {"group": "110"},acknCallbackFn);
+        socket.emit("register", {"group": "110"}, acknCallbackFn);
     }
 
     function sendUserDCN() {
@@ -81,7 +83,7 @@
         data.roomName = "xxx";
         data.eventName = "countMsg";
         data.text = 99;
-        socket.emit("broadcastInfo", data,acknCallbackFn);
+        socket.emit("broadcastInfo", data, acknCallbackFn);
     }
 
     function sendGroupDCN() {
@@ -89,7 +91,7 @@
         data.roomName = "vvv";
         data.eventName = "receive";
         data.text = 100;
-        socket.emit("broadcastInfo", data,acknCallbackFn);
+        socket.emit("broadcastInfo", data, acknCallbackFn);
     }
 </script>
 </html>

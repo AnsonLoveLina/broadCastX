@@ -14,11 +14,11 @@ var pool = mysql.createPool({
 var imEventstuff = "im";
 
 function setDefault(data) {
-    if (data.start == undefined) {
-        data.start = 0;
+    if (data.page == undefined) {
+        data.page = 1;
     }
-    if (data.end == undefined) {
-        data.end = 10;
+    if (data.pageSize == undefined) {
+        data.pageSize = 10;
     }
     if (data.unReceived == undefined) {
         data.unReceived = false;
@@ -32,14 +32,14 @@ function setDefault(data) {
 }
 
 function getSqlFormat(data) {
-    var param = [data.target,data.targetType, data.eventName];
+    var param = [data.target, data.targetType, data.eventName];
     var select = "select id,source,sourceCreateTime,target,targetType,targetCreateTime,roomName,eventName,context from stuffHistory ";
     var where = " where target=? and targetType=? and eventName=? ";
     if (data.unReceived) {
         where = where + " and targetCreateTime is null ";
     }
     var orderBy = " order by sourceCreateTime desc ";
-    var sql = mysql.format(select + where + orderBy + " limit " + data.start + "," + (data.end - data.start), param);
+    var sql = mysql.format(select + where + orderBy + " limit " + (data.page - 1) * data.pageSize + "," + (data.page * data.pageSize), param);
     return sql;
 }
 
