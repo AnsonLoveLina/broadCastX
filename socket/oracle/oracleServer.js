@@ -34,24 +34,24 @@ var readFile = async function (path) {
 var pool = {};
 
 var initPool = async function () {
-    var dbconfig = await readFile('./oracleDatasource.ini');
-    for (var i = 0; i < dbconfig.length; i++) {
-        var temp = dbconfig[i].split(',');
-        try {
-            await oracledb.createPool({
-                _enableStats: true,
-                user: temp[0],
-                password: temp[1],  // mypw contains the hr schema password
-                connectString: temp[2],
-                poolAlias: temp[3]
-            });
-            pool[temp[3]] = true;
-        } catch (err) {
-            pool[temp[3]] = false;
-            console.error(err.message);
-            throw new Error("连接池" + temp[3] + "创建失败！");
-        }
+    // var dbconfig = await readFile('./oracleDatasource.ini');
+    // for (var i = 0; i < dbconfig.length; i++) {
+    //     var temp = dbconfig[i].split(',');
+    try {
+        await oracledb.createPool({
+            _enableStats: true,
+            user: process.env.oracleUser,
+            password: process.env.oraclePassword,  // mypw contains the hr schema password
+            connectString: process.env.oracleConnectString,
+            poolAlias: "broadcastx"
+        });
+        pool["broadcastx"] = true;
+    } catch (err) {
+        pool["broadcastx"] = false;
+        console.error(err.message);
+        throw new Error("连接池broadcastx创建失败！");
     }
+    // }
 };
 
 //退出执行函数
