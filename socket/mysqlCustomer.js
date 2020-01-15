@@ -65,7 +65,7 @@ function getStuffHistory(data, callBack) {
 
 var mysqlCustomer = function (stuff) {
     if (stuff.source == undefined || stuff.target == undefined || stuff.targetType == undefined || stuff.roomName == undefined || stuff.eventName == undefined || stuff.context == undefined) {
-        console.log("illegal stuff:" + stuff);
+        console.log("can't db the history,illegal stuff:" + stuff);
         return;
     }
     pool.getConnection(function (err, connection) {

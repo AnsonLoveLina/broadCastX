@@ -1,2 +1,2 @@
 docker build -t broadcastx .
-docker run --name broadcastx -p 3000:3000 -d --env-file=./broadcastx.env com.ngw/broadcastx:1.0
+docker run --name broadcastx -p 3000:3000 -d --env-file=./broadcastx.env com.ngw/broadcastx:1.1
